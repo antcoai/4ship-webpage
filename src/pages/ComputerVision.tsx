@@ -765,153 +765,101 @@ function AntiSpoofingPlayground() {
   };
 
   return (
-    <div className="grid lg:grid-cols-12">
-      <div className="lg:col-span-8 border-r border-slate-200 p-8">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200">
-            <h3 className="text-xl font-bold text-slate-900 mb-3 flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Shield className="w-6 h-6 text-white" />
-              </div>
-              <span>Anti-Spoofing Detection</span>
-            </h3>
-            <p className="text-slate-700 mb-4 leading-relaxed">
-              Phát hiện ảnh chụp trực tiếp hay ảnh chụp qua màn hình/LCD. Ngăn chặn giả mạo bằng ảnh in, video phát lại, hoặc hiển thị trên thiết bị điện tử.
-            </p>
+    <div className="p-8 max-w-5xl mx-auto">
+      <div className="space-y-6">
 
-            <div className="grid grid-cols-2 gap-3 mt-4">
-              <div className="bg-white rounded-xl p-4 border border-blue-200">
-                <div className="text-2xl font-bold text-blue-600 mb-1">99.2%</div>
-                <div className="text-xs text-slate-600">Accuracy</div>
-              </div>
-              <div className="bg-white rounded-xl p-4 border border-blue-200">
-                <div className="text-2xl font-bold text-cyan-600 mb-1">&lt;1s</div>
-                <div className="text-xs text-slate-600">Processing</div>
-              </div>
-            </div>
+        <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <label className="block text-sm font-semibold text-slate-700 mb-3">
+            Chế độ phát hiện
+          </label>
+          <div className="inline-flex bg-slate-100 rounded-lg p-1">
+            <button
+              onClick={() => setMode('basic')}
+              className={`px-6 py-2.5 rounded-md font-medium text-sm transition-all ${
+                mode === 'basic'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Basic
+            </button>
+            <button
+              onClick={() => setMode('advanced')}
+              className={`px-6 py-2.5 rounded-md font-medium text-sm transition-all ${
+                mode === 'advanced'
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Advanced
+            </button>
           </div>
+          <p className="text-xs text-slate-500 mt-3">
+            {mode === 'basic' ? '~100-200ms | Đại trà' : '~500-1000ms | eKYC, Bảo mật cao'}
+          </p>
+        </div>
 
-          <div className="bg-white rounded-2xl p-6 border border-slate-200">
-            <label className="block text-sm font-bold text-slate-800 mb-4">
-              Chế độ phát hiện
-            </label>
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                onClick={() => setMode('basic')}
-                className={`group relative px-5 py-4 rounded-xl border-2 font-semibold transition-all overflow-hidden ${
-                  mode === 'basic'
-                    ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-700 shadow-md'
-                    : 'border-slate-200 text-slate-600 hover:border-blue-300 hover:shadow-sm'
-                }`}
-              >
-                <div className="relative z-10">
-                  <div className="text-base font-bold mb-1">Basic Mode</div>
-                  <div className="text-xs opacity-80">Xử lý nhanh</div>
+        <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <label className="block text-sm font-semibold text-slate-700 mb-3">
+            Tải lên hình ảnh
+          </label>
+          <div className="relative">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileSelect}
+              className="hidden"
+              id="file-upload"
+            />
+            <label
+              htmlFor="file-upload"
+              className="flex flex-col items-center justify-center w-full h-80 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-all bg-slate-50"
+            >
+              {previewUrl ? (
+                <div className="relative w-full h-full p-4">
+                  <img src={previewUrl} alt="Preview" className="w-full h-full object-contain rounded-lg" />
                 </div>
-                {mode === 'basic' && (
-                  <div className="absolute top-2 right-2">
-                    <CheckCircle className="w-5 h-5 text-blue-600" />
-                  </div>
-                )}
-              </button>
-              <button
-                onClick={() => setMode('advanced')}
-                className={`group relative px-5 py-4 rounded-xl border-2 font-semibold transition-all overflow-hidden ${
-                  mode === 'advanced'
-                    ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-700 shadow-md'
-                    : 'border-slate-200 text-slate-600 hover:border-blue-300 hover:shadow-sm'
-                }`}
-              >
-                <div className="relative z-10">
-                  <div className="text-base font-bold mb-1">Advanced Mode</div>
-                  <div className="text-xs opacity-80">Độ chính xác cao</div>
-                </div>
-                {mode === 'advanced' && (
-                  <div className="absolute top-2 right-2">
-                    <CheckCircle className="w-5 h-5 text-blue-600" />
-                  </div>
-                )}
-              </button>
-            </div>
-            <div className="mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
-              <p className="text-sm text-slate-600 flex items-start space-x-2">
-                <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                <span>
-                  {mode === 'basic'
-                    ? 'Phù hợp cho ứng dụng đại trà, cần tốc độ xử lý nhanh (~100-200ms)'
-                    : 'Phù hợp cho ứng dụng bảo mật cao như eKYC ngân hàng, xác thực người dùng (~500-1000ms)'}
-                </span>
-              </p>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-3">
-              Tải lên hình ảnh
+              ) : (
+                <>
+                  <Upload className="w-10 h-10 text-slate-400 mb-3" />
+                  <span className="text-sm font-medium text-slate-700">Click để tải ảnh lên</span>
+                  <span className="text-xs text-slate-400 mt-1">JPEG, PNG, BMP, TIFF (Max 10MB)</span>
+                </>
+              )}
             </label>
-            <div className="relative">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileSelect}
-                className="hidden"
-                id="file-upload"
-              />
-              <label
-                htmlFor="file-upload"
-                className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition-all"
-              >
-                {previewUrl ? (
-                  <img src={previewUrl} alt="Preview" className="max-h-full max-w-full object-contain rounded-xl" />
-                ) : (
-                  <>
-                    <Upload className="w-12 h-12 text-slate-400 mb-2" />
-                    <span className="text-sm text-slate-600">Click để chọn ảnh</span>
-                    <span className="text-xs text-slate-400 mt-1">JPEG, PNG, BMP, TIFF</span>
-                  </>
-                )}
-              </label>
-            </div>
           </div>
+        </div>
 
+        {!loading && !result && !error && (
           <button
             onClick={handleSubmit}
-            disabled={!selectedFile || loading}
-            className="w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+            disabled={!selectedFile}
+            className="w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center space-x-2"
           >
-            {loading ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                <span>Đang xử lý...</span>
-              </>
-            ) : (
-              <>
-                <Camera className="w-5 h-5" />
-                <span>Phân tích ngay</span>
-              </>
-            )}
+            <Camera className="w-5 h-5" />
+            <span>Phân tích ngay</span>
           </button>
-        </div>
-      </div>
-
-      <div className="lg:col-span-4 bg-slate-50 p-8">
-        <h3 className="text-lg font-bold text-slate-900 mb-4">Kết quả phân tích</h3>
+        )}
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
-            <XCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+          <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6 flex items-start space-x-3">
+            <XCircle className="w-6 h-6 text-red-600 flex-shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-red-900">Lỗi</p>
+              <p className="font-bold text-red-900 mb-1">Lỗi</p>
               <p className="text-sm text-red-700">{error}</p>
             </div>
           </div>
         )}
 
         {loading && (
-          <div className="flex flex-col items-center justify-center py-12">
-            <Loader2 className="w-12 h-12 text-blue-600 animate-spin mb-4" />
-            <p className="text-sm text-slate-600">Đang phân tích hình ảnh...</p>
-            {jobId && <p className="text-xs text-slate-400 mt-2">Job ID: {jobId}</p>}
+          <div className="bg-white rounded-xl border border-slate-200 p-8">
+            <div className="flex flex-col items-center justify-center py-8">
+              <div className="relative">
+                <Loader2 className="w-16 h-16 text-blue-600 animate-spin" />
+              </div>
+              <p className="text-base font-medium text-slate-700 mt-6">Đang phân tích...</p>
+              <p className="text-sm text-slate-500 mt-2">Vui lòng chờ trong giây lát</p>
+            </div>
           </div>
         )}
 
@@ -1047,22 +995,15 @@ function AntiSpoofingPlayground() {
         )}
 
         {!result && !loading && !error && (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Camera className="w-16 h-16 text-slate-300 mb-4" />
-            <p className="text-sm text-slate-500">
-              Tải lên hình ảnh để bắt đầu phân tích
+          <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Camera className="w-8 h-8 text-slate-400" />
+            </div>
+            <p className="text-sm text-slate-600">
+              Tải lên hình ảnh để bắt đầu
             </p>
           </div>
         )}
-
-        <div className="mt-6 pt-6 border-t border-slate-200">
-          <h4 className="text-sm font-bold text-slate-900 mb-3">Về service này</h4>
-          <div className="space-y-2 text-xs text-slate-600">
-            <p><strong>Basic Mode:</strong> Xử lý nhanh, phù hợp cho ứng dụng đại trà</p>
-            <p><strong>Advanced Mode:</strong> Độ chính xác cao hơn cho bảo mật</p>
-            <p><strong>Use Cases:</strong> eKYC ngân hàng, xác thực người dùng</p>
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -1070,14 +1011,14 @@ function AntiSpoofingPlayground() {
 
 function ObjectDetectionPlayground() {
   return (
-    <div className="p-12">
-      <div className="max-w-4xl mx-auto text-center py-20">
-        <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <Eye className="w-10 h-10 text-white" />
+    <div className="p-8 max-w-5xl mx-auto">
+      <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+        <div className="w-20 h-20 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center mx-auto mb-6">
+          <Eye className="w-10 h-10 text-slate-400" />
         </div>
-        <h3 className="text-3xl font-bold text-slate-900 mb-4">Object Detection</h3>
-        <p className="text-lg text-slate-600 mb-8">
-          Service nhận diện đối tượng trong hình ảnh với độ chính xác cao
+        <h3 className="text-2xl font-bold text-slate-900 mb-3">Object Detection</h3>
+        <p className="text-slate-600 mb-6">
+          Service phát hiện và nhận diện đối tượng trong ảnh
         </p>
         <div className="inline-flex items-center space-x-2 px-6 py-3 bg-slate-100 rounded-lg text-slate-500">
           <Camera className="w-5 h-5" />
@@ -1090,13 +1031,13 @@ function ObjectDetectionPlayground() {
 
 function FaceRecognitionPlayground() {
   return (
-    <div className="p-12">
-      <div className="max-w-4xl mx-auto text-center py-20">
-        <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <Users className="w-10 h-10 text-white" />
+    <div className="p-8 max-w-5xl mx-auto">
+      <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+        <div className="w-20 h-20 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center mx-auto mb-6">
+          <Users className="w-10 h-10 text-slate-400" />
         </div>
-        <h3 className="text-3xl font-bold text-slate-900 mb-4">Face Recognition</h3>
-        <p className="text-lg text-slate-600 mb-8">
+        <h3 className="text-2xl font-bold text-slate-900 mb-3">Face Recognition</h3>
+        <p className="text-slate-600 mb-6">
           Service nhận dạng và xác thực khuôn mặt với công nghệ AI
         </p>
         <div className="inline-flex items-center space-x-2 px-6 py-3 bg-slate-100 rounded-lg text-slate-500">
