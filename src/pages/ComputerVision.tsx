@@ -636,7 +636,6 @@ function IndustryCarousel() {
 function AntiSpoofingPlayground() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
-  const [mode, setMode] = useState<'basic' | 'advanced'>('advanced');
   const [loading, setLoading] = useState(false);
   const [jobId, setJobId] = useState<string>('');
   const [result, setResult] = useState<JobResponse | null>(null);
@@ -708,7 +707,6 @@ function AntiSpoofingPlayground() {
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      formData.append('mode', mode);
 
       const response = await fetch(`${apiBaseUrl}/inference`, {
         method: 'POST',
@@ -767,37 +765,6 @@ function AntiSpoofingPlayground() {
   return (
     <div className="p-8 max-w-5xl mx-auto">
       <div className="space-y-6">
-
-        <div className="bg-white rounded-xl border border-slate-200 p-6">
-          <label className="block text-sm font-semibold text-slate-700 mb-3">
-            Chế độ phát hiện
-          </label>
-          <div className="inline-flex bg-slate-100 rounded-lg p-1">
-            <button
-              onClick={() => setMode('basic')}
-              className={`px-6 py-2.5 rounded-md font-medium text-sm transition-all ${
-                mode === 'basic'
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Basic
-            </button>
-            <button
-              onClick={() => setMode('advanced')}
-              className={`px-6 py-2.5 rounded-md font-medium text-sm transition-all ${
-                mode === 'advanced'
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Advanced
-            </button>
-          </div>
-          <p className="text-xs text-slate-500 mt-3">
-            {mode === 'basic' ? '~100-200ms | Đại trà' : '~500-1000ms | eKYC, Bảo mật cao'}
-          </p>
-        </div>
 
         <div className="bg-white rounded-xl border border-slate-200 p-6">
           <label className="block text-sm font-semibold text-slate-700 mb-3">
