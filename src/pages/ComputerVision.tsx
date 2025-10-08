@@ -554,7 +554,7 @@ function AntiSpoofingPlayground() {
   const [jobId, setJobId] = useState<string>('');
   const [result, setResult] = useState<JobResponse | null>(null);
   const [error, setError] = useState<string>('');
-  const [apiBaseUrl] = useState('http://localhost:8000/api/v1/job');
+  const [apiBaseUrl] = useState('https://api-cv.4ship.vn/api/v1/job');
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedbackType, setFeedbackType] = useState<'correct' | 'incorrect' | null>(null);
   const [feedbackNote, setFeedbackNote] = useState('');
