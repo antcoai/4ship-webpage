@@ -141,142 +141,158 @@ export default function ComputerVision() {
               </p>
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-8 mb-16">
-              <div className="group bg-gradient-to-br from-slate-50 to-blue-50/50 rounded-3xl p-8 border-2 border-slate-200 hover:border-blue-300 hover:shadow-2xl transition-all duration-500">
-                <div className="flex items-start space-x-6 mb-6">
-                  <div className="flex-shrink-0">
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                      <Package className="w-8 h-8 text-white" strokeWidth={2} />
+            <div className="space-y-20">
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <div className="relative order-2 lg:order-1">
+                  <div className="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-slate-200">
+                    <img
+                      src="https://images.pexels.com/photos/1181622/pexels-photo-1181622.jpeg?auto=compress&cs=tinysrgb&w=1920"
+                      alt="Manufacturing Quality Control"
+                      className="w-full h-[500px] object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-blue-900/20 to-transparent"></div>
+                    <div className="absolute bottom-6 left-6 right-6">
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="bg-white/20 backdrop-blur-xl p-4 rounded-xl border border-white/30">
+                          <div className="text-2xl font-bold text-white mb-1">99.5%</div>
+                          <div className="text-xs text-white/90">Độ chính xác</div>
+                        </div>
+                        <div className="bg-white/20 backdrop-blur-xl p-4 rounded-xl border border-white/30">
+                          <div className="text-2xl font-bold text-white mb-1">10x</div>
+                          <div className="text-xs text-white/90">Tốc độ nhanh hơn</div>
+                        </div>
+                        <div className="bg-white/20 backdrop-blur-xl p-4 rounded-xl border border-white/30">
+                          <div className="text-2xl font-bold text-white mb-1">85%</div>
+                          <div className="text-xs text-white/90">Giảm chi phí</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-slate-900 mb-3">Sản xuất & Chế tạo</h3>
-                    <p className="text-slate-600 leading-relaxed mb-4">
-                      Tự động hóa kiểm soát chất lượng trên dây chuyền sản xuất với độ chính xác vượt trội,
-                      giảm thiểu sai sót và tăng năng suất lên đến 10 lần
+                </div>
+
+                <div className="order-1 lg:order-2">
+                  <div className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-50 border border-blue-200 rounded-full mb-6">
+                    <Package className="w-4 h-4 text-blue-600" />
+                    <span className="text-sm font-bold text-blue-900">SẢN XUẤT & CHẾ TẠO</span>
+                  </div>
+                  <h3 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6 leading-tight">
+                    Tự động hóa kiểm soát chất lượng
+                    <span className="block text-blue-600 mt-2">với độ chính xác vượt trội</span>
+                  </h3>
+                  <div className="space-y-5 text-slate-600 text-base md:text-lg leading-relaxed mb-8">
+                    <p>
+                      <strong className="text-slate-900">Một nhà máy điện tử lớn</strong> tại khu công nghiệp đã triển khai hệ thống Computer Vision của chúng tôi trên 12 dây chuyền sản xuất.
+                    </p>
+                    <p>
+                      Kết quả đạt được sau 3 tháng: <strong className="text-blue-600">tỷ lệ lỗi giảm 95%</strong>, thời gian kiểm tra giảm từ 45 giây xuống còn <strong className="text-blue-600">4 giây</strong>, tiết kiệm được <strong className="text-blue-600">2.5 tỷ đồng/năm</strong> chi phí nhân công và tái làm.
                     </p>
                   </div>
-                </div>
 
-                <div className="grid md:grid-cols-2 gap-4 mb-6">
-                  <div className="bg-white rounded-xl p-4 border border-slate-200">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Eye className="w-5 h-5 text-blue-600" />
-                      <span className="font-semibold text-slate-900">Defect Detection</span>
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-slate-900">Defect Detection</p>
+                        <p className="text-sm text-slate-600">Phát hiện lỗi vi mô</p>
+                      </div>
                     </div>
-                    <p className="text-sm text-slate-600">Phát hiện lỗi vi mô trên bề mặt, vết xước, biến dạng sản phẩm</p>
-                  </div>
-                  <div className="bg-white rounded-xl p-4 border border-slate-200">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <CheckCircle className="w-5 h-5 text-green-600" />
-                      <span className="font-semibold text-slate-900">Quality Inspection</span>
+                    <div className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-slate-900">Quality Inspection</p>
+                        <p className="text-sm text-slate-600">Kiểm tra tự động 24/7</p>
+                      </div>
                     </div>
-                    <p className="text-sm text-slate-600">Kiểm tra kích thước, màu sắc, assembly tự động 24/7</p>
-                  </div>
-                  <div className="bg-white rounded-xl p-4 border border-slate-200">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <BarChart3 className="w-5 h-5 text-cyan-600" />
-                      <span className="font-semibold text-slate-900">Production Analytics</span>
+                    <div className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-slate-900">Production Analytics</p>
+                        <p className="text-sm text-slate-600">Phân tích real-time</p>
+                      </div>
                     </div>
-                    <p className="text-sm text-slate-600">Phân tích hiệu suất dây chuyền, thống kê lỗi real-time</p>
-                  </div>
-                  <div className="bg-white rounded-xl p-4 border border-slate-200">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Activity className="w-5 h-5 text-blue-600" />
-                      <span className="font-semibold text-slate-900">Predictive Maintenance</span>
-                    </div>
-                    <p className="text-sm text-slate-600">Dự đoán hỏng hóc thiết bị qua phân tích hình ảnh</p>
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-5 border border-blue-200">
-                  <div className="flex items-start space-x-3">
-                    <TrendingUp className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold text-blue-900 mb-2">Kết quả thực tế</p>
-                      <div className="grid grid-cols-3 gap-3 text-center">
-                        <div>
-                          <div className="text-2xl font-bold text-blue-600">99.5%</div>
-                          <div className="text-xs text-blue-700">Độ chính xác</div>
-                        </div>
-                        <div>
-                          <div className="text-2xl font-bold text-blue-600">10x</div>
-                          <div className="text-xs text-blue-700">Tốc độ kiểm tra</div>
-                        </div>
-                        <div>
-                          <div className="text-2xl font-bold text-blue-600">85%</div>
-                          <div className="text-xs text-blue-700">Giảm chi phí</div>
-                        </div>
+                    <div className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-slate-900">Predictive Maintenance</p>
+                        <p className="text-sm text-slate-600">Dự đoán hỏng hóc</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="group bg-gradient-to-br from-slate-50 to-cyan-50/50 rounded-3xl p-8 border-2 border-slate-200 hover:border-cyan-300 hover:shadow-2xl transition-all duration-500">
-                <div className="flex items-start space-x-6 mb-6">
-                  <div className="flex-shrink-0">
-                    <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                      <Building2 className="w-8 h-8 text-white" strokeWidth={2} />
-                    </div>
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <div className="order-1 lg:order-1">
+                  <div className="inline-flex items-center space-x-2 px-4 py-2 bg-cyan-50 border border-cyan-200 rounded-full mb-6">
+                    <Building2 className="w-4 h-4 text-cyan-600" />
+                    <span className="text-sm font-bold text-cyan-900">NGÂN HÀNG & TÀI CHÍNH</span>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-slate-900 mb-3">Ngân hàng & Tài chính</h3>
-                    <p className="text-slate-600 leading-relaxed mb-4">
-                      Bảo vệ giao dịch và xác thực danh tính khách hàng với công nghệ sinh trắc học tiên tiến,
-                      đảm bảo an toàn tuyệt đối và trải nghiệm liền mạch
+                  <h3 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6 leading-tight">
+                    eKYC an toàn và nhanh chóng
+                    <span className="block text-cyan-600 mt-2">chỉ trong 90 giây</span>
+                  </h3>
+                  <div className="space-y-5 text-slate-600 text-base md:text-lg leading-relaxed mb-8">
+                    <p>
+                      <strong className="text-slate-900">Một ngân hàng số hàng đầu</strong> đã triển khai hệ thống eKYC với Anti-Spoofing của chúng tôi, xử lý <strong className="text-cyan-600">50,000+ giao dịch mở tài khoản/tháng</strong>.
+                    </p>
+                    <p>
+                      Kết quả đạt được: <strong className="text-cyan-600">tỷ lệ gian lận giảm 95%</strong>, thời gian xác thực giảm từ 2 ngày xuống <strong className="text-cyan-600">90 giây</strong>, tỷ lệ hoàn thành tăng <strong className="text-cyan-600">từ 45% lên 92%</strong>.
                     </p>
                   </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-slate-900">Face Liveness</p>
+                        <p className="text-sm text-slate-600">Chống giả mạo 98%</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-slate-900">eKYC Verification</p>
+                        <p className="text-sm text-slate-600">Xác thực &lt;2 giây</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-slate-900">Document OCR</p>
+                        <p className="text-sm text-slate-600">Trích xuất tự động</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+                      <div>
+                        <p className="font-semibold text-slate-900">Fraud Detection</p>
+                        <p className="text-sm text-slate-600">Giảm gian lận 95%</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-4 mb-6">
-                  <div className="bg-white rounded-xl p-4 border border-slate-200">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Shield className="w-5 h-5 text-cyan-600" />
-                      <span className="font-semibold text-slate-900">Face Liveness</span>
-                    </div>
-                    <p className="text-sm text-slate-600">Phát hiện giả mạo khuôn mặt qua ảnh, video, mặt nạ 3D</p>
-                  </div>
-                  <div className="bg-white rounded-xl p-4 border border-slate-200">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <CheckCircle2 className="w-5 h-5 text-green-600" />
-                      <span className="font-semibold text-slate-900">eKYC Verification</span>
-                    </div>
-                    <p className="text-sm text-slate-600">Xác thực CMND/CCCD tự động, so khớp khuôn mặt</p>
-                  </div>
-                  <div className="bg-white rounded-xl p-4 border border-slate-200">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Eye className="w-5 h-5 text-blue-600" />
-                      <span className="font-semibold text-slate-900">Document OCR</span>
-                    </div>
-                    <p className="text-sm text-slate-600">Trích xuất thông tin từ giấy tờ, hợp đồng tự động</p>
-                  </div>
-                  <div className="bg-white rounded-xl p-4 border border-slate-200">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <AlertTriangle className="w-5 h-5 text-orange-600" />
-                      <span className="font-semibold text-slate-900">Fraud Detection</span>
-                    </div>
-                    <p className="text-sm text-slate-600">Phát hiện gian lận giao dịch bằng hình ảnh</p>
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl p-5 border border-cyan-200">
-                  <div className="flex items-start space-x-3">
-                    <Clock className="w-5 h-5 text-cyan-600 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="font-semibold text-cyan-900 mb-2">Hiệu quả triển khai</p>
-                      <div className="grid grid-cols-3 gap-3 text-center">
-                        <div>
-                          <div className="text-2xl font-bold text-cyan-600">98%</div>
-                          <div className="text-xs text-cyan-700">Chống giả mạo</div>
+                <div className="relative order-2 lg:order-2">
+                  <div className="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-slate-200">
+                    <img
+                      src="https://images.pexels.com/photos/6801648/pexels-photo-6801648.jpeg?auto=compress&cs=tinysrgb&w=1920"
+                      alt="Banking eKYC"
+                      className="w-full h-[500px] object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-cyan-900/80 via-cyan-900/20 to-transparent"></div>
+                    <div className="absolute bottom-6 left-6 right-6">
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="bg-white/20 backdrop-blur-xl p-4 rounded-xl border border-white/30">
+                          <div className="text-2xl font-bold text-white mb-1">98%</div>
+                          <div className="text-xs text-white/90">Chống giả mạo</div>
                         </div>
-                        <div>
-                          <div className="text-2xl font-bold text-cyan-600">&lt;2s</div>
-                          <div className="text-xs text-cyan-700">Xác thực eKYC</div>
+                        <div className="bg-white/20 backdrop-blur-xl p-4 rounded-xl border border-white/30">
+                          <div className="text-2xl font-bold text-white mb-1">&lt;2s</div>
+                          <div className="text-xs text-white/90">Xác thực</div>
                         </div>
-                        <div>
-                          <div className="text-2xl font-bold text-cyan-600">95%</div>
-                          <div className="text-xs text-cyan-700">Giảm gian lận</div>
+                        <div className="bg-white/20 backdrop-blur-xl p-4 rounded-xl border border-white/30">
+                          <div className="text-2xl font-bold text-white mb-1">50K+</div>
+                          <div className="text-xs text-white/90">Giao dịch/tháng</div>
                         </div>
                       </div>
                     </div>
