@@ -413,7 +413,7 @@ function IndustryCarousel() {
     if (!container) return;
 
     const handleWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) < 50 || isTransitioning) return;
+      if (Math.abs(e.deltaY) < 150 || isTransitioning) return;
 
       e.preventDefault();
 
@@ -510,37 +510,34 @@ function IndustryCarousel() {
         </div>
       </div>
 
-      <div className="flex items-center justify-center mt-12 space-x-4">
-        <button
-          onClick={prevSlide}
-          className="p-3 bg-white border-2 border-slate-300 rounded-full hover:bg-slate-50 hover:border-blue-400 transition-all shadow-lg hover:shadow-xl"
-          aria-label="Previous slide"
-        >
-          <ChevronLeft className="w-6 h-6 text-slate-700" />
-        </button>
-
+      <div className="flex items-center justify-center mt-12 space-x-3">
         <div className="flex space-x-2">
           {industries.map((_, idx) => (
             <button
               key={idx}
-              onClick={() => setCurrentSlide(idx)}
-              className={`h-2 rounded-full transition-all ${
+              onClick={() => {
+                if (!isTransitioning) {
+                  setIsTransitioning(true);
+                  setCurrentSlide(idx);
+                  setTimeout(() => setIsTransitioning(false), 800);
+                }
+              }}
+              className={`h-2.5 rounded-full transition-all ${
                 idx === currentSlide
-                  ? 'w-8 bg-blue-600'
-                  : 'w-2 bg-slate-300 hover:bg-slate-400'
+                  ? 'w-12 bg-gradient-to-r from-blue-600 to-cyan-500'
+                  : 'w-2.5 bg-slate-300 hover:bg-slate-400'
               }`}
               aria-label={`Go to slide ${idx + 1}`}
             />
           ))}
         </div>
+      </div>
 
-        <button
-          onClick={nextSlide}
-          className="p-3 bg-white border-2 border-slate-300 rounded-full hover:bg-slate-50 hover:border-blue-400 transition-all shadow-lg hover:shadow-xl"
-          aria-label="Next slide"
-        >
-          <ChevronRight className="w-6 h-6 text-slate-700" />
-        </button>
+      <div className="text-center mt-6 text-sm text-slate-500">
+        <p className="flex items-center justify-center space-x-2">
+          <span>Scroll để chuyển slide</span>
+          <span className="inline-block animate-bounce">↕</span>
+        </p>
       </div>
     </div>
   );
@@ -678,47 +675,81 @@ function AntiSpoofingPlayground() {
     <div className="grid lg:grid-cols-12">
       <div className="lg:col-span-8 border-r border-slate-200 p-8">
         <div className="max-w-4xl mx-auto space-y-8">
-          <div>
-            <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center space-x-2">
-              <Shield className="w-7 h-7 text-blue-600" />
+          <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200">
+            <h3 className="text-xl font-bold text-slate-900 mb-3 flex items-center space-x-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+                <Shield className="w-6 h-6 text-white" />
+              </div>
               <span>Anti-Spoofing Detection</span>
             </h3>
-            <p className="text-slate-600 mb-6">
+            <p className="text-slate-700 mb-4 leading-relaxed">
               Phát hiện ảnh chụp trực tiếp hay ảnh chụp qua màn hình/LCD. Ngăn chặn giả mạo bằng ảnh in, video phát lại, hoặc hiển thị trên thiết bị điện tử.
             </p>
+
+            <div className="grid grid-cols-2 gap-3 mt-4">
+              <div className="bg-white rounded-xl p-4 border border-blue-200">
+                <div className="text-2xl font-bold text-blue-600 mb-1">99.2%</div>
+                <div className="text-xs text-slate-600">Accuracy</div>
+              </div>
+              <div className="bg-white rounded-xl p-4 border border-blue-200">
+                <div className="text-2xl font-bold text-cyan-600 mb-1">&lt;1s</div>
+                <div className="text-xs text-slate-600">Processing</div>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-3">
+          <div className="bg-white rounded-2xl p-6 border border-slate-200">
+            <label className="block text-sm font-bold text-slate-800 mb-4">
               Chế độ phát hiện
             </label>
-            <div className="flex space-x-4">
+            <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => setMode('basic')}
-                className={`flex-1 px-4 py-3 rounded-lg border-2 font-semibold transition-all ${
+                className={`group relative px-5 py-4 rounded-xl border-2 font-semibold transition-all overflow-hidden ${
                   mode === 'basic'
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-slate-200 text-slate-600 hover:border-blue-300'
+                    ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-700 shadow-md'
+                    : 'border-slate-200 text-slate-600 hover:border-blue-300 hover:shadow-sm'
                 }`}
               >
-                Basic Mode
+                <div className="relative z-10">
+                  <div className="text-base font-bold mb-1">Basic Mode</div>
+                  <div className="text-xs opacity-80">Xử lý nhanh</div>
+                </div>
+                {mode === 'basic' && (
+                  <div className="absolute top-2 right-2">
+                    <CheckCircle className="w-5 h-5 text-blue-600" />
+                  </div>
+                )}
               </button>
               <button
                 onClick={() => setMode('advanced')}
-                className={`flex-1 px-4 py-3 rounded-lg border-2 font-semibold transition-all ${
+                className={`group relative px-5 py-4 rounded-xl border-2 font-semibold transition-all overflow-hidden ${
                   mode === 'advanced'
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-slate-200 text-slate-600 hover:border-blue-300'
+                    ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-700 shadow-md'
+                    : 'border-slate-200 text-slate-600 hover:border-blue-300 hover:shadow-sm'
                 }`}
               >
-                Advanced Mode
+                <div className="relative z-10">
+                  <div className="text-base font-bold mb-1">Advanced Mode</div>
+                  <div className="text-xs opacity-80">Độ chính xác cao</div>
+                </div>
+                {mode === 'advanced' && (
+                  <div className="absolute top-2 right-2">
+                    <CheckCircle className="w-5 h-5 text-blue-600" />
+                  </div>
+                )}
               </button>
             </div>
-            <p className="text-xs text-slate-500 mt-2">
-              {mode === 'basic'
-                ? 'Xử lý nhanh (~100-200ms) - Phù hợp cho ứng dụng cần tốc độ'
-                : 'Độ chính xác cao (~500-1000ms) - Phù hợp cho ứng dụng cần bảo mật cao'}
-            </p>
+            <div className="mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <p className="text-sm text-slate-600 flex items-start space-x-2">
+                <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                <span>
+                  {mode === 'basic'
+                    ? 'Phù hợp cho ứng dụng đại trà, cần tốc độ xử lý nhanh (~100-200ms)'
+                    : 'Phù hợp cho ứng dụng bảo mật cao như eKYC ngân hàng, xác thực người dùng (~500-1000ms)'}
+                </span>
+              </p>
+            </div>
           </div>
 
           <div>
@@ -808,7 +839,7 @@ function AntiSpoofingPlayground() {
                 )}
                 <div>
                   <p className="text-lg font-bold text-slate-900">
-                    {result.is_fake ? 'Giả mạo phát hiện' : 'Khuôn mặt thật'}
+                    {result.is_fake ? 'Ảnh giả mạo' : 'Ảnh thật'}
                   </p>
                   <p className="text-sm text-slate-600">
                     Độ tin cậy: {((result.confidence || 0) * 100).toFixed(1)}%
