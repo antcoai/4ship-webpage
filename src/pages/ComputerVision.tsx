@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowLeft, Eye, Shield, Users, Camera, Upload, Loader2, CheckCircle2, XCircle, Info, Sparkles, Zap, Activity, CheckCircle, Building2, ShoppingBag, TrendingUp, Clock, BarChart3, AlertTriangle, Package, ThumbsUp, ThumbsDown, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -197,8 +197,77 @@ export default function ComputerVision() {
   );
 }
 
+function TypingText({ text, speed = 30 }: { text: string; speed?: number }) {
+  const [displayedText, setDisplayedText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    setDisplayedText('');
+    setCurrentIndex(0);
+  }, [text]);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, speed);
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, text, speed]);
+
+  return <span>{displayedText}</span>;
+}
+
+function AnimatedNumber({ value, duration = 2000 }: { value: string; duration?: number }) {
+  const [displayValue, setDisplayValue] = useState('0');
+  const isNumber = /^\d+\.?\d*$/.test(value.replace('%', '').replace('+', '').replace('K', '').replace('M', '').replace('s', '').replace('ms', '').replace('x', '').replace('<', '').replace('>', ''));
+
+  useEffect(() => {
+    if (!isNumber) {
+      const chars = value.split('');
+      let currentIndex = 0;
+      const interval = setInterval(() => {
+        if (currentIndex < chars.length) {
+          setDisplayValue(chars.slice(0, currentIndex + 1).join(''));
+          currentIndex++;
+        } else {
+          clearInterval(interval);
+        }
+      }, duration / chars.length);
+      return () => clearInterval(interval);
+    }
+
+    const numericPart = parseFloat(value.replace(/[^\d.]/g, ''));
+    const suffix = value.replace(/[\d.]/g, '');
+    const steps = 60;
+    const stepValue = numericPart / steps;
+    let current = 0;
+
+    const interval = setInterval(() => {
+      current += stepValue;
+      if (current >= numericPart) {
+        setDisplayValue(value);
+        clearInterval(interval);
+      } else {
+        const formatted = suffix.includes('.')
+          ? current.toFixed(1)
+          : Math.floor(current).toString();
+        setDisplayValue(formatted + suffix);
+      }
+    }, duration / steps);
+
+    return () => clearInterval(interval);
+  }, [value, duration, isNumber]);
+
+  return <span>{displayValue}</span>;
+}
+
 function IndustryCarousel() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollTimeout = useRef<NodeJS.Timeout>();
 
   const industries = [
     {
@@ -325,30 +394,74 @@ function IndustryCarousel() {
 
   const currentIndustry = industries[currentSlide];
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
     setCurrentSlide((prev) => (prev + 1) % industries.length);
-  };
+    setTimeout(() => setIsTransitioning(false), 800);
+  }, [isTransitioning, industries.length]);
 
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
     setCurrentSlide((prev) => (prev - 1 + industries.length) % industries.length);
-  };
+    setTimeout(() => setIsTransitioning(false), 800);
+  }, [isTransitioning, industries.length]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) < 50 || isTransitioning) return;
+
+      e.preventDefault();
+
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
+
+      scrollTimeout.current = setTimeout(() => {
+        if (e.deltaY > 0) {
+          nextSlide();
+        } else {
+          prevSlide();
+        }
+      }, 100);
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    return () => {
+      container.removeEventListener('wheel', handleWheel);
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
+    };
+  }, [isTransitioning, nextSlide, prevSlide]);
 
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <div className="grid lg:grid-cols-2 gap-12 items-center">
-        <div className={`relative ${currentIndustry.imageOrder}`}>
+        <div className={`relative ${currentIndustry.imageOrder} transition-all duration-700 ease-out ${isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
           <div className="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-slate-200">
             <img
+              key={currentSlide}
               src={currentIndustry.image}
               alt={currentIndustry.badge}
-              className="w-full h-[500px] object-cover transition-all duration-500"
+              className="w-full h-[500px] object-cover animate-[fadeIn_0.8s_ease-out]"
             />
             <div className={`absolute inset-0 bg-gradient-to-t ${currentIndustry.gradientFrom} ${currentIndustry.gradientVia} to-transparent`}></div>
             <div className="absolute bottom-6 left-6 right-6">
               <div className="grid grid-cols-3 gap-3">
                 {currentIndustry.metrics.map((metric, idx) => (
-                  <div key={idx} className="bg-white/20 backdrop-blur-xl p-4 rounded-xl border border-white/30">
-                    <div className="text-2xl font-bold text-white mb-1">{metric.value}</div>
+                  <div
+                    key={idx}
+                    className="bg-white/20 backdrop-blur-xl p-4 rounded-xl border border-white/30 animate-[slideUp_0.6s_ease-out] opacity-0"
+                    style={{ animationDelay: `${idx * 0.1}s`, animationFillMode: 'forwards' }}
+                  >
+                    <div className="text-2xl font-bold text-white mb-1">
+                      <AnimatedNumber value={metric.value} duration={1500} />
+                    </div>
                     <div className="text-xs text-white/90">{metric.label}</div>
                   </div>
                 ))}
@@ -357,24 +470,35 @@ function IndustryCarousel() {
           </div>
         </div>
 
-        <div className={currentIndustry.textOrder}>
-          <div className={`inline-flex items-center space-x-2 px-4 py-2 ${currentIndustry.badgeColor} border rounded-full mb-6`}>
+        <div className={`${currentIndustry.textOrder} transition-all duration-700 ease-out ${isTransitioning ? 'opacity-0 translate-x-8' : 'opacity-100 translate-x-0'}`}>
+          <div className={`inline-flex items-center space-x-2 px-4 py-2 ${currentIndustry.badgeColor} border rounded-full mb-6 animate-[fadeIn_0.5s_ease-out]`}>
             <currentIndustry.icon className={`w-4 h-4 ${currentIndustry.iconColor}`} />
             <span className="text-sm font-bold">{currentIndustry.badge}</span>
           </div>
-          <h3 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6 leading-tight">
-            {currentIndustry.title}
-            <span className={`block ${currentIndustry.subtitleColor} mt-2`}>{currentIndustry.subtitle}</span>
+          <h3 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6 leading-tight animate-[slideInRight_0.6s_ease-out]">
+            <TypingText text={currentIndustry.title} speed={40} />
+            <span className={`block ${currentIndustry.subtitleColor} mt-2`}>
+              <TypingText text={currentIndustry.subtitle} speed={40} />
+            </span>
           </h3>
           <div className="space-y-5 text-slate-600 text-base md:text-lg leading-relaxed mb-8">
             {currentIndustry.story.map((paragraph, idx) => (
-              <p key={idx} dangerouslySetInnerHTML={{ __html: paragraph }} />
+              <p
+                key={idx}
+                dangerouslySetInnerHTML={{ __html: paragraph }}
+                className="animate-[fadeIn_0.8s_ease-out] opacity-0"
+                style={{ animationDelay: `${0.3 + idx * 0.2}s`, animationFillMode: 'forwards' }}
+              />
             ))}
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-6">
             {currentIndustry.features.map((feature, idx) => (
-              <div key={idx} className="flex items-start space-x-3">
+              <div
+                key={idx}
+                className="flex items-start space-x-3 animate-[slideInRight_0.5s_ease-out] opacity-0"
+                style={{ animationDelay: `${0.5 + idx * 0.1}s`, animationFillMode: 'forwards' }}
+              >
                 <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
                 <div>
                   <p className="font-semibold text-slate-900">{feature.title}</p>
