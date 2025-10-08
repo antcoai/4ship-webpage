@@ -20,6 +20,9 @@ interface JobResponse {
 
 export default function ComputerVision() {
   const [activeTab, setActiveTab] = useState<'anti-spoofing' | 'object-detection' | 'face-recognition'>('anti-spoofing');
+  const [antiSpoofSubTab, setAntiSpoofSubTab] = useState<'playground' | 'api-docs'>('playground');
+  const [objectDetectionSubTab, setObjectDetectionSubTab] = useState<'playground' | 'api-docs'>('playground');
+  const [faceRecognitionSubTab, setFaceRecognitionSubTab] = useState<'playground' | 'api-docs'>('playground');
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -116,9 +119,96 @@ export default function ComputerVision() {
               </div>
 
               <div className="min-h-[750px]">
-                {activeTab === 'anti-spoofing' && <AntiSpoofingPlayground />}
-                {activeTab === 'object-detection' && <ObjectDetectionPlayground />}
-                {activeTab === 'face-recognition' && <FaceRecognitionPlayground />}
+                {activeTab === 'anti-spoofing' && (
+                  <>
+                    <div className="border-b border-slate-200 bg-slate-50 px-8">
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => setAntiSpoofSubTab('playground')}
+                          className={`px-6 py-3 font-semibold transition-all ${
+                            antiSpoofSubTab === 'playground'
+                              ? 'text-blue-600 border-b-2 border-blue-600'
+                              : 'text-slate-600 hover:text-slate-900'
+                          }`}
+                        >
+                          Playground
+                        </button>
+                        <button
+                          onClick={() => setAntiSpoofSubTab('api-docs')}
+                          className={`px-6 py-3 font-semibold transition-all ${
+                            antiSpoofSubTab === 'api-docs'
+                              ? 'text-blue-600 border-b-2 border-blue-600'
+                              : 'text-slate-600 hover:text-slate-900'
+                          }`}
+                        >
+                          API Document
+                        </button>
+                      </div>
+                    </div>
+                    {antiSpoofSubTab === 'playground' && <AntiSpoofingPlayground />}
+                    {antiSpoofSubTab === 'api-docs' && <AntiSpoofingAPIDocs />}
+                  </>
+                )}
+                {activeTab === 'object-detection' && (
+                  <>
+                    <div className="border-b border-slate-200 bg-slate-50 px-8">
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => setObjectDetectionSubTab('playground')}
+                          className={`px-6 py-3 font-semibold transition-all ${
+                            objectDetectionSubTab === 'playground'
+                              ? 'text-blue-600 border-b-2 border-blue-600'
+                              : 'text-slate-600 hover:text-slate-900'
+                          }`}
+                        >
+                          Playground
+                        </button>
+                        <button
+                          onClick={() => setObjectDetectionSubTab('api-docs')}
+                          className={`px-6 py-3 font-semibold transition-all ${
+                            objectDetectionSubTab === 'api-docs'
+                              ? 'text-blue-600 border-b-2 border-blue-600'
+                              : 'text-slate-600 hover:text-slate-900'
+                          }`}
+                        >
+                          API Document
+                        </button>
+                      </div>
+                    </div>
+                    {objectDetectionSubTab === 'playground' && <ObjectDetectionPlayground />}
+                    {objectDetectionSubTab === 'api-docs' && <div className="p-8 text-slate-600">API Documentation coming soon...</div>}
+                  </>
+                )}
+                {activeTab === 'face-recognition' && (
+                  <>
+                    <div className="border-b border-slate-200 bg-slate-50 px-8">
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => setFaceRecognitionSubTab('playground')}
+                          className={`px-6 py-3 font-semibold transition-all ${
+                            faceRecognitionSubTab === 'playground'
+                              ? 'text-blue-600 border-b-2 border-blue-600'
+                              : 'text-slate-600 hover:text-slate-900'
+                          }`}
+                        >
+                          Playground
+                        </button>
+                        <button
+                          onClick={() => setFaceRecognitionSubTab('api-docs')}
+                          className={`px-6 py-3 font-semibold transition-all ${
+                            faceRecognitionSubTab === 'api-docs'
+                              ? 'text-blue-600 border-b-2 border-blue-600'
+                              : 'text-slate-600 hover:text-slate-900'
+                          }`}
+                        >
+                          API Document
+                        </button>
+                      </div>
+                    </div>
+                    {faceRecognitionSubTab === 'playground' && <FaceRecognitionPlayground />}
+                    {faceRecognitionSubTab === 'api-docs' && <div className="p-8 text-slate-600">API Documentation coming soon...</div>}
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -564,22 +654,25 @@ function AntiSpoofingPlayground() {
     setFeedbackSubmitting(true);
 
     try {
-      const feedbackData = {
+      const feedbackPayload = {
         job_id: result.job_id,
-        file_name: selectedFile?.name || 'unknown',
+        image_id: result.image_id,
         is_correct: feedbackType === 'correct',
-        predicted_result: result.is_fake,
         correct_label: feedbackType === 'incorrect' ? (result.is_fake ? 'real' : 'fake') : null,
-        feedback_note: feedbackNote || null,
-        mode: mode,
-        created_at: new Date().toISOString()
+        feedback_note: feedbackNote || null
       };
 
-      const { error } = await supabase
-        .from('cv_feedback')
-        .insert([feedbackData]);
+      const feedbackResponse = await fetch('https://api-cv.4ship.vn/api/v1/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(feedbackPayload),
+      });
 
-      if (error) throw error;
+      if (!feedbackResponse.ok) {
+        throw new Error('Failed to submit feedback');
+      }
 
       setFeedbackSuccess(true);
       setTimeout(() => {
@@ -1009,6 +1102,280 @@ function FaceRecognitionPlayground() {
         <div className="inline-flex items-center space-x-2 px-6 py-3 bg-slate-100 rounded-lg text-slate-500">
           <Camera className="w-5 h-5" />
           <span className="font-semibold">Coming soon</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AntiSpoofingAPIDocs() {
+  const [copiedEndpoint, setCopiedEndpoint] = useState<string>('');
+
+  const copyToClipboard = (text: string, endpoint: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedEndpoint(endpoint);
+    setTimeout(() => setCopiedEndpoint(''), 2000);
+  };
+
+  const CodeBlock = ({ code }: { code: string }) => (
+    <div className="relative group">
+      <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto text-sm leading-relaxed">
+        <code>{code}</code>
+      </pre>
+      <button
+        onClick={() => copyToClipboard(code, code)}
+        className="absolute top-2 right-2 p-2 bg-slate-700 hover:bg-slate-600 rounded text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity"
+      >
+        {copiedEndpoint === code ? 'Copied!' : 'Copy'}
+      </button>
+    </div>
+  );
+
+  return (
+    <div className="p-8 max-w-6xl mx-auto">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-slate-900 mb-4">Anti-Spoofing Detection API</h2>
+        <p className="text-lg text-slate-600">
+          API phát hiện ảnh giả mạo với job-based processing và feedback system
+        </p>
+      </div>
+
+      <div className="space-y-8">
+        <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 rounded-2xl p-6">
+          <h3 className="text-xl font-bold text-slate-900 mb-3">Base URL</h3>
+          <div className="bg-white rounded-lg p-4 border border-blue-200 font-mono text-sm">
+            https://api-cv.4ship.vn/api/v1/job
+          </div>
+        </div>
+
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <h3 className="text-2xl font-bold text-slate-900 mb-4 flex items-center space-x-2">
+            <span className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-3 py-1 rounded-lg text-sm font-semibold">POST</span>
+            <span>1. Create Inference Job</span>
+          </h3>
+
+          <div className="mb-4">
+            <p className="text-slate-600 mb-4">Tạo background job để xử lý phát hiện ảnh giả mạo.</p>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <p className="font-mono text-sm text-slate-900">POST /api/v1/job/inference</p>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <h4 className="font-bold text-slate-900 mb-2">Parameters</h4>
+            <div className="space-y-2">
+              <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-mono text-sm font-semibold text-slate-900">file</span>
+                  <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-semibold">required</span>
+                </div>
+                <p className="text-sm text-slate-600">Image file (JPEG, PNG, BMP, TIFF, max 10MB)</p>
+              </div>
+              <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-mono text-sm font-semibold text-slate-900">mode</span>
+                  <span className="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded font-semibold">optional</span>
+                </div>
+                <p className="text-sm text-slate-600">Detection mode: <code className="bg-white px-2 py-0.5 rounded border">basic</code> (fast) or <code className="bg-white px-2 py-0.5 rounded border">advanced</code> (accurate, default)</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <h4 className="font-bold text-slate-900 mb-2">Example Request</h4>
+            <CodeBlock code={`curl -X POST "https://api-cv.4ship.vn/api/v1/job/inference" \\
+  -F "file=@image.jpg" \\
+  -F "mode=advanced"`} />
+          </div>
+
+          <div>
+            <h4 className="font-bold text-slate-900 mb-2">Example Response</h4>
+            <CodeBlock code={`{
+  "job_id": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "pending"
+}`} />
+          </div>
+        </div>
+
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <h3 className="text-2xl font-bold text-slate-900 mb-4 flex items-center space-x-2">
+            <span className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-3 py-1 rounded-lg text-sm font-semibold">GET</span>
+            <span>2. Get Job Status & Results</span>
+          </h3>
+
+          <div className="mb-4">
+            <p className="text-slate-600 mb-4">Lấy trạng thái và kết quả xử lý của job.</p>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <p className="font-mono text-sm text-slate-900">GET /api/v1/job/{'{job_id}'}</p>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <h4 className="font-bold text-slate-900 mb-2">Job Status Values</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="bg-yellow-50 border border-yellow-200 p-3 rounded-lg">
+                <span className="font-mono text-sm font-bold text-yellow-800">pending</span>
+                <p className="text-xs text-yellow-700 mt-1">Đang chờ xử lý</p>
+              </div>
+              <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                <span className="font-mono text-sm font-bold text-blue-800">processing</span>
+                <p className="text-xs text-blue-700 mt-1">Đang xử lý</p>
+              </div>
+              <div className="bg-green-50 border border-green-200 p-3 rounded-lg">
+                <span className="font-mono text-sm font-bold text-green-800">completed</span>
+                <p className="text-xs text-green-700 mt-1">Hoàn thành</p>
+              </div>
+              <div className="bg-red-50 border border-red-200 p-3 rounded-lg">
+                <span className="font-mono text-sm font-bold text-red-800">failed</span>
+                <p className="text-xs text-red-700 mt-1">Lỗi xử lý</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <h4 className="font-bold text-slate-900 mb-2">Example Request</h4>
+            <CodeBlock code={`curl -X GET "https://api-cv.4ship.vn/api/v1/job/550e8400-e29b-41d4-a716-446655440000"`} />
+          </div>
+
+          <div>
+            <h4 className="font-bold text-slate-900 mb-2">Example Response (Completed)</h4>
+            <CodeBlock code={`{
+  "job_id": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "completed",
+  "image_id": "abc123-def456-ghi789",
+  "file_name": "image.jpg",
+  "is_fake": true,
+  "confidence": 0.85,
+  "has_feedback": false,
+  "feedback_count": 0
+}`} />
+          </div>
+        </div>
+
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <h3 className="text-2xl font-bold text-slate-900 mb-4 flex items-center space-x-2">
+            <span className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-3 py-1 rounded-lg text-sm font-semibold">POST</span>
+            <span>3. Submit Feedback</span>
+          </h3>
+
+          <div className="mb-4">
+            <p className="text-slate-600 mb-4">Gửi feedback khi kết quả phát hiện không chính xác.</p>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <p className="font-mono text-sm text-slate-900">POST /api/v1/feedback</p>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <h4 className="font-bold text-slate-900 mb-2">Request Body</h4>
+            <div className="space-y-2">
+              <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-mono text-sm font-semibold text-slate-900">job_id</span>
+                  <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-semibold">required</span>
+                </div>
+                <p className="text-sm text-slate-600">ID của inference job</p>
+              </div>
+              <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-mono text-sm font-semibold text-slate-900">image_id</span>
+                  <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-semibold">required</span>
+                </div>
+                <p className="text-sm text-slate-600">ID của ảnh đã xử lý</p>
+              </div>
+              <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-mono text-sm font-semibold text-slate-900">is_correct</span>
+                  <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-semibold">required</span>
+                </div>
+                <p className="text-sm text-slate-600">Kết quả có chính xác không (true/false)</p>
+              </div>
+              <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-mono text-sm font-semibold text-slate-900">correct_label</span>
+                  <span className="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded font-semibold">optional</span>
+                </div>
+                <p className="text-sm text-slate-600">Label đúng: <code className="bg-white px-2 py-0.5 rounded border">real</code> hoặc <code className="bg-white px-2 py-0.5 rounded border">fake</code> (bắt buộc nếu is_correct = false)</p>
+              </div>
+              <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-mono text-sm font-semibold text-slate-900">feedback_note</span>
+                  <span className="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded font-semibold">optional</span>
+                </div>
+                <p className="text-sm text-slate-600">Ghi chú thêm về feedback</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <h4 className="font-bold text-slate-900 mb-2">Example Request</h4>
+            <CodeBlock code={`curl -X POST "https://api-cv.4ship.vn/api/v1/feedback" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "job_id": "550e8400-e29b-41d4-a716-446655440000",
+    "image_id": "abc123-def456-ghi789",
+    "is_correct": false,
+    "correct_label": "real",
+    "feedback_note": "This is actually a real face"
+  }'`} />
+          </div>
+
+          <div>
+            <h4 className="font-bold text-slate-900 mb-2">Example Response</h4>
+            <CodeBlock code={`{
+  "id": "770e8400-e29b-41d4-a716-446655440002",
+  "job_id": "550e8400-e29b-41d4-a716-446655440000",
+  "image_id": "abc123-def456-ghi789",
+  "created_at": "2024-01-01T12:00:00Z",
+  "is_correct": false,
+  "correct_label": "real",
+  "feedback_note": "This is actually a real face"
+}`} />
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-slate-50 to-blue-50 border border-slate-200 rounded-2xl p-6">
+          <h3 className="text-xl font-bold text-slate-900 mb-4">Detection Modes</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+              <h4 className="font-bold text-slate-900 mb-3 flex items-center space-x-2">
+                <Zap className="w-5 h-5 text-yellow-600" />
+                <span>Basic Mode</span>
+              </h4>
+              <ul className="text-sm text-slate-600 space-y-2">
+                <li>• <strong>Method:</strong> Rule-based detection</li>
+                <li>• <strong>Speed:</strong> ~100-200ms/image</li>
+                <li>• <strong>Use case:</strong> Ứng dụng cần tốc độ</li>
+                <li>• <strong>Features:</strong> Frequency, texture, color analysis</li>
+              </ul>
+            </div>
+            <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+              <h4 className="font-bold text-slate-900 mb-3 flex items-center space-x-2">
+                <Shield className="w-5 h-5 text-blue-600" />
+                <span>Advanced Mode</span>
+              </h4>
+              <ul className="text-sm text-slate-600 space-y-2">
+                <li>• <strong>Method:</strong> CNN-based detection</li>
+                <li>• <strong>Speed:</strong> ~500-1000ms/image</li>
+                <li>• <strong>Use case:</strong> eKYC, bảo mật cao</li>
+                <li>• <strong>Accuracy:</strong> Higher for subtle attacks</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6">
+          <div className="flex items-start space-x-3">
+            <Info className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
+            <div>
+              <h4 className="font-bold text-blue-900 mb-2">Lưu ý quan trọng</h4>
+              <ul className="text-sm text-blue-800 space-y-1">
+                <li>• Polling mỗi 1-2 giây để check job status</li>
+                <li>• File size tối đa: 10MB cho single inference</li>
+                <li>• Supported formats: JPEG, PNG, BMP, TIFF</li>
+                <li>• Feedback giúp cải thiện độ chính xác của model</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
