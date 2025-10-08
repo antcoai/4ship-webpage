@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MessageSquare, Mic, FileText, Database, Brain, Workflow, Check, TrendingUp, Plane } from 'lucide-react';
+import { MessageSquare, Mic, FileText, Database, Brain, Workflow, Check, TrendingUp, Plane, Eye } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 export default function Solutions() {
@@ -179,6 +179,30 @@ export default function Solutions() {
         { label: 'Voice Recognition', value: '99%', icon: 'accuracy' },
         { label: 'VR Quality', value: '4K/8K', icon: 'quality' },
         { label: 'Languages', value: '30+', icon: 'language' },
+      ],
+    },
+    {
+      icon: Eye,
+      title: 'Computer Vision',
+      shortDesc: 'Thị giác máy tính thông minh',
+      description: 'Giải pháp thị giác máy tính tiên tiến với khả năng nhận diện, phát hiện và phân tích hình ảnh, video theo thời gian thực. Áp dụng deep learning để tự động hóa quy trình kiểm soát chất lượng, bảo mật và phân tích hành vi.',
+      features: [
+        'Nhận diện đối tượng và khuôn mặt độ chính xác cao',
+        'Phát hiện và theo dõi chuyển động real-time',
+        'Phân tích hành vi và cảm xúc',
+        'Kiểm soát chất lượng tự động',
+        'Đếm và phân loại đối tượng thông minh',
+      ],
+      benefits: [
+        { label: 'Độ chính xác nhận diện', value: '99.5%' },
+        { label: 'Tốc độ xử lý', value: '60 FPS' },
+        { label: 'Giảm sai sót', value: '95%' },
+      ],
+      color: 'from-orange-500 to-red-500',
+      techSpecs: [
+        { label: 'Detection Accuracy', value: '99.5%', icon: 'accuracy' },
+        { label: 'Processing Speed', value: '60fps', icon: 'speed' },
+        { label: 'Objects/Frame', value: '100+', icon: 'capacity' },
       ],
     },
   ];
