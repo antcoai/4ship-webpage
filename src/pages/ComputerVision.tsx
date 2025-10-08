@@ -623,12 +623,7 @@ function IndustryCarousel() {
         </div>
       </div>
 
-      <div className="text-center mt-6 text-sm text-slate-500">
-        <p className="flex items-center justify-center space-x-2">
-          <span>Scroll để chuyển slide</span>
-          <span className="inline-block animate-bounce">↕</span>
-        </p>
-      </div>
+  
     </div>
   );
 }
