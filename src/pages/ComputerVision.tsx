@@ -991,6 +991,23 @@ function AntiSpoofingPlayground() {
                 <p className="text-sm font-semibold text-green-900">Cảm ơn bạn đã gửi feedback!</p>
               </div>
             )}
+
+            <button
+              onClick={() => {
+                setResult(null);
+                setSelectedFile(null);
+                setPreviewUrl('');
+                setError('');
+                setShowFeedback(false);
+                setFeedbackType(null);
+                setFeedbackNote('');
+                setFeedbackSuccess(false);
+              }}
+              className="w-full px-6 py-3 bg-white border-2 border-blue-600 text-blue-600 rounded-xl font-semibold hover:bg-blue-50 transition-all flex items-center justify-center space-x-2"
+            >
+              <Upload className="w-5 h-5" />
+              <span>Phân tích ảnh mới</span>
+            </button>
           </div>
         )}
 
