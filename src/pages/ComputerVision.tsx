@@ -233,30 +233,7 @@ export default function ComputerVision() {
 
             <IndustryCarousel />
 
-            <div className="bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-50 rounded-3xl p-8 md:p-12 border-2 border-blue-200">
-              <div className="text-center mb-8">
-                <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">
-                  Đối tác tin cậy của hơn 500+ doanh nghiệp
-                </h3>
-                <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                  Từ startup đến tập đoàn lớn, chúng tôi đã giúp doanh nghiệp chuyển đổi số với Computer Vision
-                </p>
-              </div>
-              <div className="grid md:grid-cols-4 gap-6">
-                {[
-                  { value: '500+', label: 'Dự án triển khai' },
-                  { value: '99.5%', label: 'Độ chính xác trung bình' },
-                  { value: '10M+', label: 'Hình ảnh xử lý/ngày' },
-                  { value: '24/7', label: 'Hỗ trợ kỹ thuật' }
-                ].map((stat, idx) => (
-                  <div key={idx} className="bg-white rounded-2xl p-6 text-center border border-blue-200 shadow-sm">
-                    <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent mb-2">
-                      {stat.value}
-                    </div>
-                    <div className="text-sm text-slate-600">{stat.label}</div>
-                  </div>
-                ))}
-              </div>
+            
             </div>
           </div>
         </div>
