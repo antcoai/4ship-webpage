@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { ArrowLeft, Eye, Shield, Users, Camera, Upload, Loader2, CheckCircle2, XCircle, Info, Sparkles, Zap, Activity, CheckCircle, Building2, ShoppingBag, TrendingUp, Clock, BarChart3, AlertTriangle, Package } from 'lucide-react';
+import { ArrowLeft, Eye, Shield, Users, Camera, Upload, Loader2, CheckCircle2, XCircle, Info, Sparkles, Zap, Activity, CheckCircle, Building2, ShoppingBag, TrendingUp, Clock, BarChart3, AlertTriangle, Package, ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 interface JobResponse {
   job_id: string;
@@ -488,7 +489,49 @@ function AntiSpoofingPlayground() {
   const [jobId, setJobId] = useState<string>('');
   const [result, setResult] = useState<JobResponse | null>(null);
   const [error, setError] = useState<string>('');
-  const [apiBaseUrl] = useState('https://api-cv.4ship.vn/api/v1/job');
+  const [apiBaseUrl] = useState('http://localhost:8000/api/v1/job');
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedbackType, setFeedbackType] = useState<'correct' | 'incorrect' | null>(null);
+  const [feedbackNote, setFeedbackNote] = useState('');
+  const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
+  const [feedbackSuccess, setFeedbackSuccess] = useState(false);
+
+  const handleFeedbackSubmit = async () => {
+    if (!result || feedbackType === null) return;
+
+    setFeedbackSubmitting(true);
+
+    try {
+      const feedbackData = {
+        job_id: result.job_id,
+        file_name: selectedFile?.name || 'unknown',
+        is_correct: feedbackType === 'correct',
+        predicted_result: result.is_fake,
+        correct_label: feedbackType === 'incorrect' ? (result.is_fake ? 'real' : 'fake') : null,
+        feedback_note: feedbackNote || null,
+        mode: mode,
+        created_at: new Date().toISOString()
+      };
+
+      const { error } = await supabase
+        .from('cv_feedback')
+        .insert([feedbackData]);
+
+      if (error) throw error;
+
+      setFeedbackSuccess(true);
+      setTimeout(() => {
+        setShowFeedback(false);
+        setFeedbackSuccess(false);
+        setFeedbackType(null);
+        setFeedbackNote('');
+      }, 2000);
+    } catch (err) {
+      console.error('Error submitting feedback:', err);
+    } finally {
+      setFeedbackSubmitting(false);
+    }
+  };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -576,7 +619,7 @@ function AntiSpoofingPlayground() {
               <span>Anti-Spoofing Detection</span>
             </h3>
             <p className="text-slate-600 mb-6">
-              Phát hiện giả mạo khuôn mặt với AI, ngăn chặn tấn công bằng ảnh in, video hoặc mặt nạ 3D
+              Phát hiện ảnh chụp trực tiếp hay ảnh chụp qua màn hình/LCD. Ngăn chặn giả mạo bằng ảnh in, video phát lại, hoặc hiển thị trên thiết bị điện tử.
             </p>
           </div>
 
@@ -608,8 +651,8 @@ function AntiSpoofingPlayground() {
             </div>
             <p className="text-xs text-slate-500 mt-2">
               {mode === 'basic'
-                ? 'Nhanh (~100-200ms) - Phân tích dựa trên quy tắc'
-                : 'Chính xác (~500-1000ms) - Phân tích dựa trên CNN'}
+                ? 'Xử lý nhanh (~100-200ms) - Phù hợp cho ứng dụng cần tốc độ'
+                : 'Độ chính xác cao (~500-1000ms) - Phù hợp cho ứng dụng cần bảo mật cao'}
             </p>
           </div>
 
@@ -721,10 +764,96 @@ function AntiSpoofingPlayground() {
               <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div className="text-sm text-blue-900">
                 <p className="font-semibold mb-1">Thông tin kỹ thuật</p>
-                <p>Chế độ: {mode === 'basic' ? 'Basic (Rule-based)' : 'Advanced (CNN)'}</p>
+                <p>Chế độ: {mode === 'basic' ? 'Basic Mode' : 'Advanced Mode'}</p>
                 <p className="text-xs text-blue-700 mt-2">Job ID: {result.job_id}</p>
               </div>
             </div>
+
+            {!showFeedback && !feedbackSuccess && (
+              <div className="bg-slate-50 border-2 border-slate-200 rounded-lg p-4">
+                <p className="text-sm font-semibold text-slate-700 mb-3">Kết quả có chính xác không?</p>
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => {
+                      setShowFeedback(true);
+                      setFeedbackType('correct');
+                    }}
+                    className="flex-1 px-4 py-2 bg-green-50 border-2 border-green-200 text-green-700 rounded-lg hover:bg-green-100 transition-all font-semibold flex items-center justify-center space-x-2"
+                  >
+                    <ThumbsUp className="w-4 h-4" />
+                    <span>Chính xác</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowFeedback(true);
+                      setFeedbackType('incorrect');
+                    }}
+                    className="flex-1 px-4 py-2 bg-red-50 border-2 border-red-200 text-red-700 rounded-lg hover:bg-red-100 transition-all font-semibold flex items-center justify-center space-x-2"
+                  >
+                    <ThumbsDown className="w-4 h-4" />
+                    <span>Không chính xác</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {showFeedback && !feedbackSuccess && (
+              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-lg p-5">
+                <div className="flex items-start space-x-3 mb-4">
+                  <MessageSquare className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="text-sm font-bold text-slate-900 mb-1">
+                      {feedbackType === 'correct' ? 'Cảm ơn bạn đã xác nhận!' : 'Rất tiếc vì sự bất tiện'}
+                    </p>
+                    <p className="text-xs text-slate-600">
+                      {feedbackType === 'correct'
+                        ? 'Góp ý của bạn giúp chúng tôi cải thiện dịch vụ.'
+                        : 'Vui lòng cho chúng tôi biết thêm để cải thiện độ chính xác.'}
+                    </p>
+                  </div>
+                </div>
+                <textarea
+                  value={feedbackNote}
+                  onChange={(e) => setFeedbackNote(e.target.value)}
+                  placeholder="Thêm nhận xét (không bắt buộc)..."
+                  rows={3}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-3"
+                />
+                <div className="flex space-x-2">
+                  <button
+                    onClick={handleFeedbackSubmit}
+                    disabled={feedbackSubmitting}
+                    className="flex-1 px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 flex items-center justify-center space-x-2"
+                  >
+                    {feedbackSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Đang gửi...</span>
+                      </>
+                    ) : (
+                      <span>Gửi feedback</span>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowFeedback(false);
+                      setFeedbackType(null);
+                      setFeedbackNote('');
+                    }}
+                    className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-semibold hover:bg-slate-200 transition-all"
+                  >
+                    Hủy
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {feedbackSuccess && (
+              <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4 flex items-center space-x-3">
+                <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0" />
+                <p className="text-sm font-semibold text-green-900">Cảm ơn bạn đã gửi feedback!</p>
+              </div>
+            )}
           </div>
         )}
 
@@ -740,9 +869,9 @@ function AntiSpoofingPlayground() {
         <div className="mt-6 pt-6 border-t border-slate-200">
           <h4 className="text-sm font-bold text-slate-900 mb-3">Về service này</h4>
           <div className="space-y-2 text-xs text-slate-600">
-            <p><strong>Basic Mode:</strong> Phân tích tần số, texture và màu sắc</p>
-            <p><strong>Advanced Mode:</strong> CNN để phát hiện tấn công tinh vi</p>
-            <p><strong>Use Cases:</strong> Bảo mật ngân hàng, kiểm soát truy cập</p>
+            <p><strong>Basic Mode:</strong> Xử lý nhanh, phù hợp cho ứng dụng đại trà</p>
+            <p><strong>Advanced Mode:</strong> Độ chính xác cao hơn cho bảo mật</p>
+            <p><strong>Use Cases:</strong> eKYC ngân hàng, xác thực người dùng</p>
           </div>
         </div>
       </div>
