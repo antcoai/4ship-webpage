@@ -20,6 +20,7 @@ export default function Header({ scrolled }: HeaderProps) {
     { label: 'Chatbot AI', description: 'Trợ lý ảo thông minh 24/7', href: '/chatbot-ai' },
     { label: 'Voice Bot', description: 'Giải pháp giao tiếp bằng giọng nói', href: '/voice-bot' },
     { label: 'AI Travel', description: 'Trợ lý du lịch thông minh', href: '/ai-travel' },
+    { label: 'Computer Vision', description: 'Thị giác máy tính thông minh', href: '/computer-vision' },
     { label: 'Document AI', description: 'Xử lý tài liệu tự động', href: '#document' },
     { label: 'CMS AI', description: 'Quản lý nội dung thông minh', href: '#cms' },
     { label: 'Data Digitization', description: 'Số hóa dữ liệu bằng AI', href: '#digitization' },
