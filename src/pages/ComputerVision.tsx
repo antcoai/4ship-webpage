@@ -233,8 +233,6 @@ export default function ComputerVision() {
 
             <IndustryCarousel />
 
-            
-     
           </div>
         </div>
       </div>
